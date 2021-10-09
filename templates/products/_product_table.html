@@ -1,0 +1,78 @@
+<table id="product-table" class="table table-bordered table-hover">
+  {%csrf_token%}
+    <thead>
+    <tr>
+      <th>
+        <input class="" type="checkbox" value="" id="select-all">
+        <label class="form-check-label" for="select-all">
+          <i class="bi bi-check-all"></i>
+        </label>
+      </th>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Status</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+      {%for product in products%}
+      <tr id="{{product.id}}">
+        <td>
+          <input class="productcheck" type="checkbox" id="product_{{product.id}}" name="check" value="{{product.id}}">
+          <label class="form-check-label" for="product_{{product.id}}">
+            <i class="bi bi-check2"></i>
+          </label>
+        </td>
+        <td>{{product.name|truncatechars:10}}</td>
+        <td>
+          {{product.price}}
+        </td>
+        {%if product.stock%}
+        <td><p class="text-success">Available</p></td>
+        {%else%}
+        <td><p class="text-danger">Not available</p></td>
+        {%endif%}
+        <td> {{product.desc|truncatechars:50}}</td>
+        <td>
+          <button id="update-product" class="update-product bs-modal btn text-primary" type="button" name="button" data-form-url="{% url 'product_update' product.id %}"><i class="bi bi-pencil"></i></button>
+        </td>
+        <!-- <td>
+          <button id="delete-product" class="delete-product bs-modal btn btn-primary" type="button" name="button" data-form-url="{%url 'product_delete' product.id%}">Delete</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#delete_{{product.id}}">
+            Delete
+          </button>
+          <div class="modal fade" id="delete_{{product.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h3 class="modal-title">Delete Product</h3>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              
+                <div class="modal-body">
+                  <p class="delete-text">Are you sure you want to delete Product <strong>{{ product.name }}</strong> ?</p>
+                </div>
+              
+                <div class="modal-footer">
+                  <button type="submit" id="delete-btn" class="btn btn-danger" data-form-url="{%url 'product_delete' product.id%}">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td> -->
+        
+      </tr>
+      {%endfor%}          
+    </tbody>
+    <!-- <tfoot>
+    <tr>
+      <th>Rendering engine</th>
+      <th>Browser</th>
+      <th>Platform(s)</th>
+      <th>Engine version</th>
+      <th>CSS grade</th>
+    </tr>
+    </tfoot> -->
+  </table>

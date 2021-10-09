@@ -1,0 +1,266 @@
+{%extends 'base/base.html'%}
+{%block content%}
+<div class="content-wrapper">
+  <!-- Modal  -->
+  <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content"></div>
+    </div>
+  </div>
+  <!-- Modal  -->
+  <div class="modal fade" tabindex="-1" role="dialog" id="create-product">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content"></div>
+    </div>
+  </div>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>My Products</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">My Products</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content p-0">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <div class="row justify-content-between">
+                  <div class="col-sm-5">
+                    <h3 class="card-title">You can edit and delete your products.</h3>
+                  </div>
+                  <div class="col-sm-5 text-right">
+                    
+                    <button id="create-product-async" class="create-product btn text-success" type="button" name="button" data-form-url="{% url 'product_create' %}"><i class="bi bi-plus-circle"></i></button>
+                    <button id='delete_confirmation' type="button" class="btn text-danger" data-toggle="modal" >
+                      <i class="bi bi-trash"></i>
+                    </button>
+                    <div class="modal fade" id="delete_product_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h3 class="modal-title">Delete Product</h3>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                        
+                          <div class="modal-body">
+                            <p class="text-left">Are you sure you want to delete <strong>Selected Products</strong> ?</p>
+                          </div>
+                        
+                          <div class="modal-footer">
+                            <button type="submit" id="product_delete_btn" class="btn btn-danger" >Delete</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- <a href="{%url 'product_update' 1%}" class="folat-end mr-2">Edit</a>
+                    <a href="{%url 'product_delete' 1%}" class="folat-end mr-2">Delete</a> -->
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                {%include 'products/_product_table.html'%}
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+{%endblock%}
+{%block javascript%}
+<script type="text/javascript">
+  
+  $( document ).ready(function() {
+    var ids = [];
+    var csrf = $('input[name=csrfmiddlewaretoken]').val()
+    $('#select-all').click(function(event) {   
+      if(this.checked) {
+          // Iterate each checkbox
+          $(':checkbox').each(function() {
+              this.checked = true;                        
+          });
+      } else {
+          $(':checkbox').each(function() {
+              this.checked = false;                       
+          });
+      }
+  });
+  $('#delete_confirmation').click(function(){
+    
+      $(':checkbox:checked').each(function(i){
+        ids[i]=$(this).val()
+      })
+      console.log(ids);
+      if(ids.length===0){
+        alert('Please select the product')
+      }else{
+        $('#delete_product_modal').modal('show')
+      }
+      
+  })
+   $('#product_delete_btn').click(function(){
+      $('#delete_product_modal').modal('hide')
+      if(ids[0]===''){
+        ids.shift();
+      }
+      $.ajax({
+        url:"{%url 'delete_products'%}",
+        method:'post',
+        data:{
+          ids,
+          csrfmiddlewaretoken:csrf
+        },
+        success:function(responce){
+          for(var i=0;i<ids.length;i++){
+
+            $('tr#'+ids[i]).hide();
+          }
+          console.log('deleted')
+        }
+      })
+   });
+  });
+  $(function () {
+     /*function createProductSyncModalForm(){
+      $("#create-product").modalForm({
+        formURL: "{% url 'product_create' %}",
+        modalID: "#create-product",
+      });
+     }
+     createProductSyncModalForm()*/
+      /*function deleteProductModalForm(){
+        $(".delete-product").each(function () {
+          $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+        });
+      }
+      deleteProductModalForm();*/
+
+      function updateProductModalForm(){
+        $(".update-product").each(function () {
+          $(this).modalForm({formURL: $(this).data("form-url")});
+        });  
+      }
+      updateProductModalForm();
+      
+    //# asyncSettings.successMessage For product creation.
+    var asyncSuccessMessageCreate = [
+            "<div ",
+            "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
+            "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
+            "Success: Product was created.",
+            "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
+            "<span aria-hidden='true'>&times;</span>",
+            "</button>",
+            "</div>",
+            "<script>",
+            "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
+            "<\/script>"
+          ].join("");
+
+    // modal form
+    function createProductAsyncModalForm() {
+      $("#create-product-async").modalForm({
+          formURL: "{% url 'product_create' %}",
+          modalID: "#create-product",
+          asyncUpdate: true,
+          asyncSettings: {
+            closeOnSubmit: true,
+            successMessage: asyncSuccessMessageCreate,
+            dataUrl: "/products/myproducts/",
+            dataElementId: "#product-table",
+            dataKey: "table",
+            addModalFormFunction: reinstantiateModalForms
+          }
+      });
+    }
+    createProductAsyncModalForm();
+
+    //# asyncSettings.successMessage For product Updation.
+    var asyncSuccessMessageUpdate = [
+          "<div ",
+          "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
+          "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
+          "Success: Product was updated.",
+          "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
+          "<span aria-hidden='true'>&times;</span>",
+          "</button>",
+          "</div>",
+          "<script>",
+          "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
+          "<\/script>"
+        ].join("");
+    // modal form
+    function updateProductAsyncModalForm() {
+      $(".update-product").each(function(){
+        $(this).modalForm({
+          formURL: $(this).data("form-url"),
+          asyncUpdate: true,
+          asyncSettings: {
+            closeOnSubmit: true,
+            successMessage: asyncSuccessMessageUpdate,
+            dataUrl: "/products/myproducts/",
+            dataElementId: "#product-table",
+            dataKey: "table",
+            addModalFormFunction: reinstantiateModalForms
+          }
+        });
+      })
+    }
+    updateProductAsyncModalForm();
+
+    /*function deleteProductAsyncModalForm() {
+      $(".delete-product").each(function(){
+        $(this).modalForm({
+          formURL: $(this).data("form-url"),
+          isDeleteForm: true,
+          asyncUpdate: true,
+          asyncSettings: {
+            closeOnSubmit: true,
+            successMessage: asyncSuccessMessageUpdate,
+            dataUrl: "/products/myproducts/",
+            dataElementId: "#product-table",
+            dataKey: "table",
+            addModalFormFunction: reinstantiateModalForms
+          }
+        });
+      })
+    }
+    deleteProductAsyncModalForm();*/
+    
+
+    function reinstantiateModalForms(){
+      createProductAsyncModalForm();
+      updateProductAsyncModalForm();
+      //deleteProductAsyncModalForm();
+      //deleteProductModalForm();
+    }
+
+    // Hide message
+    $(".alert").fadeTo(2000, 500).slideUp(500, function () {
+      $(".alert").slideUp(500);
+    });
+  });
+  </script>
+{%endblock%}

@@ -39,7 +39,10 @@
               <div class="card-header">
                 <div class="row justify-content-between">
                   <div class="col-sm-5">
-                    <h3 class="card-title">You can edit and delete your products.</h3>
+                    <form class="d-flex">
+                      <input class="form-control me-2" name="search" type="search" value="{{search}}" placeholder="Search" aria-label="Search">
+                      <button class="btn btn-outline-success ml-2" type="submit"><i class="bi bi-search"></i></button>
+                    </form>
                   </div>
                   <div class="col-sm-5 text-right">
                     
@@ -75,6 +78,37 @@
               <!-- /.card-header -->
               <div class="card-body">
                 {%include 'products/_product_table.html'%}
+
+                <!-- Pagination -->
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination justify-content-center">
+                    <li class="page-item"><a class="page-link" href="?page=1"><i class="bi bi-caret-left-square"></i> First</a></li>
+                    {% if page_obj.has_previous %}
+                          <li class="page-item ">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1"><i class="bi bi-caret-left-fill"></i> Previous</a>
+                          </li>
+                      {% else %}
+                        <li class="page-item disabled">
+                          <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-caret-left-fill"></i> Previous</a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item">
+                      <li class="page-item active"><a class="page-link " href="#">{{ page_obj.number }}</a></li>
+                    </li>
+                      {% if page_obj.has_next %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next <i class="bi bi-caret-right-fill"></i></a>
+                      </li>
+                      {%else%}
+                      <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-disabled="true">Next  <i class="bi bi-caret-right-fill"></i></a>
+                      </li>
+                      {% endif %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last <i class="bi bi-caret-right-square"></i></a>
+                      </li>
+                  </ul>
+                </nav>
               </div>
               <!-- /.card-body -->
             </div>
@@ -87,6 +121,15 @@
       <!-- /.container-fluid -->
     </section>
     <!-- /.content -->
+  </div>
+  <!-- Toast message -->
+  <div id="myToast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        You should select the product.
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
   </div>
 {%endblock%}
 {%block javascript%}
@@ -106,7 +149,7 @@
               this.checked = false;                       
           });
       }
-  });
+    });
   $('#delete_confirmation').click(function(){
     
       $(':checkbox:checked').each(function(i){
@@ -114,12 +157,15 @@
       })
       console.log(ids);
       if(ids.length===0){
-        alert('Please select the product')
+        //alert('Please select the product')
+        $("#myToast").toast("show");
+        console.log('Toast showed')
+        
       }else{
         $('#delete_product_modal').modal('show')
       }
       
-  })
+    })
    $('#product_delete_btn').click(function(){
       $('#delete_product_modal').modal('hide')
       if(ids[0]===''){

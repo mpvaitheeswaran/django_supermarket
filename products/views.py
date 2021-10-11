@@ -5,7 +5,7 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, DeleteView,UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from products.models import Product
-from bootstrap_modal_forms.generic import BSModalCreateView,BSModalDeleteView,BSModalUpdateView
+from bootstrap_modal_forms.generic import BSModalCreateView,BSModalDeleteView,BSModalUpdateView,BSModalReadView
 from .forms import ProductCreationForm
 from django.http import JsonResponse
 from django.template.loader import render_to_string
@@ -19,7 +19,7 @@ def myProductsData(request):
         # asyncSettings.dataKey = 'table'
         data['table'] = render_to_string(
             'products/_product_table.html',
-            {'products': products},
+            {'page_obj': products},
             request=request
         )
         return JsonResponse(data)
@@ -27,15 +27,31 @@ class ProductList(LoginRequiredMixin,ListView):
     model = Product
     template_name = 'products/product_list.html'
     context_object_name = 'products'
+    paginate_by = 5
+    def get_queryset(self):
+        search = self.request.GET.get('search')
+        if search:
+            object_list = self.model.objects.filter(name__icontains=search)
+        else:
+            object_list = self.model.objects.all()
+        return object_list
 
 class MyProductList(LoginRequiredMixin,ListView):
     model = Product
     template_name = 'products/my_product_list.html'
+    paginate_by = 5
     context_object_name = 'products'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['products'] = Product.objects.filter(user=self.request.user)
         return context
+    def get_queryset(self):
+        search = self.request.GET.get('search')
+        if search:
+            object_list = self.model.objects.filter(name__icontains=search)
+        else:
+            object_list = self.model.objects.filter(user=self.request.user)
+        return object_list
 
 # class ProductCreate(LoginRequiredMixin,CreateView):
 #     model = Product
@@ -55,7 +71,9 @@ class ProductCreateView(BSModalCreateView):
     success_message = 'Success: Product was created.'
     success_url = reverse_lazy('my_product_list')
 
-
+class ProductReadView(BSModalReadView):
+    model = Product
+    template_name = 'products/product_read.html'
 # class ProductUpdate(LoginRequiredMixin,UpdateView):
 #     model = Product
 #     template_name = 'products/product_update.html'

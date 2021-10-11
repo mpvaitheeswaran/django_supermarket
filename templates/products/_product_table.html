@@ -1,4 +1,4 @@
-<table id="product-table" class="table table-bordered table-hover">
+<table id="product-table" class="table  table-hover mb-5">
   {%csrf_token%}
     <thead>
     <tr>
@@ -15,7 +15,7 @@
     </tr>
     </thead>
     <tbody>
-      {%for product in products%}
+      {%for product in page_obj%}
       <tr id="{{product.id}}">
         <td>
           <input class="productcheck" type="checkbox" id="product_{{product.id}}" name="check" value="{{product.id}}">
@@ -64,6 +64,7 @@
         </td> -->
         
       </tr>
+      
       {%endfor%}          
     </tbody>
     <!-- <tfoot>
@@ -76,3 +77,4 @@
     </tr>
     </tfoot> -->
   </table>
+  

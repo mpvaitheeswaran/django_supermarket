@@ -17,7 +17,12 @@
         </div>
       </div><!-- /.container-fluid -->
     </section>
-
+<!-- Modal -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content"></div>
+      </div>
+    </div>
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
@@ -25,17 +30,21 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">DataTable with minimal features & hover style</h3>
+                <form class="d-flex">
+                  <input class="form-control me-2" name="search" type="search" value="{{search}}" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success ml-2" type="submit"><i class="bi bi-search"></i></button>
+                </form>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="example2" class="table table-bordered table-hover">
+                <table id="example2" class="table table-hover mb-5">
                   <thead>
                     <tr>
                         <th>Name</th>
                         <th>Price</th>
                         <th>Status</th>
                         <th>Description</th>
+                        <th>Posted By</th>
                       </tr>
                   </thead>
                   <tbody>
@@ -45,18 +54,17 @@
                       <td>
                         {{product.price}}
                       </td>
-                      {%if product.status%}
+                      {%if product.stock%}
                       <td><p class="text-success">Available</p></td>
                       {%else%}
                       <td><p class="text-danger">Not available</p></td>
                       {%endif%}
                       <td> {{product.desc|truncatechars:50}}</td>
-                      <td><a href="#">View</a></td>
-                      <td><a href="#">Edit</a></td>
-                      <td><a href="#">Delete</a></td>
+                      <td> @{{product.user}}</td>
+                      <td><button class="read-product btn text-primary" data-form-url="{%url 'product_read' product.id%}"><i class="bi bi-eye-fill"></i></button></td>
                     </tr>
                     {%empty%}
-                    <td colspan="4">No Products Found</td>
+                    <td colspan="5">No Products Found</td>
                     {%endfor%}
                   </tbody>
                   <!-- <tfoot>
@@ -69,6 +77,35 @@
                   </tr>
                   </tfoot> -->
                 </table>
+                  <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                      <li class="page-item"><a class="page-link" href="?page=1"><i class="bi bi-caret-left-square"></i> First</a></li>
+                      {% if page_obj.has_previous %}
+                            <li class="page-item ">
+                              <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1"><i class="bi bi-caret-left-fill"></i> Previous</a>
+                            </li>
+                        {% else %}
+                          <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i class="bi bi-caret-left-fill"></i> Previous</a>
+                          </li>
+                      {% endif %}
+                      <li class="page-item">
+                        <li class="page-item active"><a class="page-link " href="#">{{ page_obj.number }}</a></li>
+                      </li>
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                          <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next <i class="bi bi-caret-right-fill"></i></a>
+                        </li>
+                        {%else%}
+                        <li class="page-item disabled">
+                          <a class="page-link" href="#" aria-disabled="true">Next  <i class="bi bi-caret-right-fill"></i></a>
+                        </li>
+                        {% endif %}
+                        <li class="page-item">
+                          <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last <i class="bi bi-caret-right-square"></i></a>
+                        </li>
+                    </ul>
+                  </nav>
               </div>
               <!-- /.card-body -->
             </div>
@@ -82,4 +119,15 @@
     </section>
     <!-- /.content -->
   </div>
+{%endblock%}
+
+{%block javascript%}
+<script>
+  function readBookModalForm() {
+    $(".read-product").each(function () {
+        $(this).modalForm({formURL: $(this).data("form-url")});
+    });
+  }
+  readBookModalForm();
+</script>
 {%endblock%}

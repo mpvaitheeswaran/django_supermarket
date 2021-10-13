@@ -1,0 +1,85 @@
+{%extends 'base/base.html'%}
+{%load static%}
+{%block stylesheet %}
+<link rel="stylesheet" href="{%static 'kanban_board/css/main.css'%}">
+{%endblock%}
+	{%block content%}
+		<div class="content-wrapper">
+		
+			<div class="container-fluid">
+				<div class="kanban">
+					<div class="kanban__column">
+						<div class="kanban__column-title">To DO</div>
+						{%for item in items%}
+						{%if item.product.column == 1%}
+						<div class="kanban__items" draggable="true">
+							<div  class="kanban__item-input">
+								<div class="row justify-content-between">
+									<div class="col-sm-4">
+										<h3>{{item.product.name}}</h3>
+										<p>&#8377; {{item.product.price}}</p>
+									</div>
+									<div class="col-sm-4">
+										<img class="rounded" src="{{item.product.img.url}}" width="100%" height="100%" alt="Product Img" style="object-fit: cover;">
+									</div>
+								</div>
+							</div>
+							<div class="kanban__dropzone"></div>
+						</div>
+						{%endif%}
+						{%endfor%}
+						<button class="kanban__add-item" type="button">+ Add</button>
+					</div>
+					<div class="kanban__column">
+						<div class="kanban__column-title">Doing</div>
+						{%for item in items%}
+						{%if item.product.column == 2%}
+						<div class="kanban__items" draggable="true">
+							<div  class="kanban__item-input">
+								<div class="row justify-content-between">
+									<div class="col-sm-4">
+										<h3>{{item.product.name}}</h3>
+										<p>&#8377; {{item.product.price}}</p>
+									</div>
+									<div class="col-sm-4">
+										<img class="rounded" src="{{item.product.img.url}}" width="100%" height="100%" alt="Product Img" style="object-fit: cover;">
+									</div>
+								</div>
+							</div>
+							<div class="kanban__dropzone"></div>
+						</div>
+						{%endif%}
+						{%endfor%}
+						<button class="kanban__add-item" type="button">+ Add</button>
+					</div>
+					<div class="kanban__column">
+						<div class="kanban__column-title">Done</div>
+						{%for item in items%}
+						{%if item.product.column == 3%}
+						<div class="kanban__items" draggable="true">
+							<div  class="kanban__item-input">
+								<div class="row justify-content-between">
+									<div class="col-sm-4">
+										<h3>{{item.product.name}}</h3>
+										<p>&#8377; {{item.product.price}}</p>
+									</div>
+									<div class="col-sm-4">
+										<img class="rounded" src="{{item.product.img.url}}" width="100%" height="100%" alt="Product Img" style="object-fit: cover;">
+									</div>
+								</div>
+							</div>
+							<div class="kanban__dropzone"></div>
+						</div>
+						{%endif%}
+						{%endfor%}
+						<button class="kanban__add-item" type="button">+ Add</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	{%endblock%}
+{%block javascript%}
+	<script src="{%static 'kanban_board/js/main.js'%}" type="module"></script>
+{%endblock%}
+</body>
+</html>

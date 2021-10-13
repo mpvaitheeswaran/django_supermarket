@@ -1,6 +1,7 @@
 {%load static%}
 {% url 'my_product_list' as my_product_list %}
 {% url 'product_list' as product_list %}
+{% url 'boards' as boards %}
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
@@ -60,9 +61,9 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./index3.html" class="nav-link">
+                <a href="{%url 'boards'%}" class="nav-link {% if request.path == boards %} active {%endif%}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Dashboard v3</p>
+                  <p>Boards</p>
                 </a>
               </li>
             </ul>

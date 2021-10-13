@@ -9,4 +9,5 @@ class Product(models.Model):
     desc = models.TextField()
     img = models.ImageField(upload_to='product_pics')
     stock = models.BooleanField(default=True)
+    column = models.IntegerField(default=1)
     

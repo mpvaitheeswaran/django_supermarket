@@ -101,7 +101,6 @@ class ProductDeleteView(BSModalDeleteView):
 def deleteProduct(request):
     if request.method=='POST':
         product_ids = request.POST.getlist('ids[]')
-        print(product_ids)
         for id in product_ids:
             product = Product.objects.get(pk=id)
             product.delete()

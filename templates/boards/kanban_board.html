@@ -2,79 +2,14 @@
 {%load static%}
 {%block stylesheet %}
 <!-- <link rel="stylesheet" href="{%static 'kanban_board/css/main.css'%}"> -->
+<style>
+	.card-body.card-hover{
+		background-color:#f5f7fa ;
+	}
+</style>
 {%endblock%}
 	{%block content%}
 		{%csrf_token%}
-		<!-- <div class="content-wrapper ">
-			<div class="container-fluid">
-				<div class="kanban1">
-					<div class="status kanban__column" id="1">
-						<div class="kanban__column-title">To DO</div>
-						{%for item in items%}
-						{%if item.product.column == 1%}
-						<div class="todo kanban__items" draggable="true" id="{{item.product.id}}">
-							<div  class="kanban__item-input">
-								<div class="row justify-content-between">
-									<div class="col-sm-4">
-										<h3>{{item.product.name}}</h3>
-										<p>&#8377; {{item.product.price}}</p>
-									</div>
-									<div class="col-sm-4">
-										<img class="rounded" src="{{item.product.img.url}}" width="100%" height="100%" alt="Product Img" style="object-fit: cover;" draggable="false">
-									</div>
-								</div>
-							</div>
-							<div class="kanban__dropzone"></div>
-						</div>
-						{%endif%}
-						{%endfor%}
-					</div>
-					<div class="status kanban__column" id="2">
-						<div class="kanban__column-title">Doing</div>
-						{%for item in items%}
-						{%if item.product.column == 2%}
-						<div class="todo kanban__items" draggable="true" id="{{item.product.id}}">
-							<div  class="kanban__item-input">
-								<div class="row justify-content-between">
-									<div class="col-sm-4">
-										<h3>{{item.product.name}}</h3>
-										<p>&#8377; {{item.product.price}}</p>
-									</div>
-									<div class="col-sm-4">
-										<img class="rounded" src="{{item.product.img.url}}" width="100%" height="100%" alt="Product Img" style="object-fit: cover;" draggable="false">
-									</div>
-								</div>
-							</div>
-							<div class="kanban__dropzone"></div>
-						</div>
-						{%endif%}
-						{%endfor%}
-					</div>
-					<div class="status kanban__column" id="3">
-						<div class="kanban__column-title">Done</div>
-						{%for item in items%}
-						{%if item.product.column == 3%}
-						<div class="todo kanban__items" draggable="true" id="{{item.product.id}}">
-							<div  class="kanban__item-input">
-								<div class="row justify-content-between">
-									<div class="col-sm-4">
-										<h3>{{item.product.name}}</h3>
-										<p>&#8377; {{item.product.price}}</p>
-									</div>
-									<div class="col-sm-4">
-										<img class="rounded" src="{{item.product.img.url}}" width="100%" height="100%" alt="Product Img" style="object-fit: cover;" draggable="false">
-									</div>
-								</div>
-							</div>
-							<div class="kanban__dropzone"></div>
-						</div>
-						{%endif%}
-						{%endfor%}
-					</div>
-				</div>
-			</div>
-		</div> -->
-		
 		<div class="content-wrapper kanban">
   
 			<!-- Modal -->
@@ -91,12 +26,6 @@
 						<table class="table table-hover">
 							<tbody>
 								{%for product in products%}
-								<!-- <div class="form-check" id="select{{product.id}}">
-									<input width="50px" height="50px" class="form-check-input" type="checkbox" value="{{product.id}}" id="check{{product.id}}">
-									<label class="form-check-label" for="check{{product.id}}">
-									{{product.name}}
-									</label>
-								</div> -->
 									<tr id="select{{product.id}}" >
 										<th scope="row">
 											<div class="form-check">
@@ -230,7 +159,20 @@
 			  </div>
 			</section>
 		  </div>
-		
+		 <!-- Toast message -->
+		<div id="myToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0;">
+			<div id="liveToast" class="toast hide bg-danger text-light" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
+			<div class="toast-header">
+				<strong class="mr-auto "><i class="bi bi-exclamation-triangle"></i> Opps!</strong>
+				<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="toast-body">
+				Please select the any one of the product.
+			</div>
+			</div>
+		</div>
 {%endblock%}
 {%block javascript%}
 	<!-- <script src="{%static 'kanban_board/js/main.js'%}" type="module"></script> -->
@@ -274,18 +216,21 @@
 			}
 
 			function dragEnter() {
-			this.style.border = "1px dashed #ccc";
+			//this.style.border = "1px dashed #ccc";
+			this.classList.add("card-hover");
 			console.log("dragEnter");
 			}
 
 			function dragLeave() {
-			this.style.border = "none";
+			//this.style.border = "none";
+			this.classList.remove("card-hover");
 			console.log("dragLeave");
 			}
 
 			function dragDrop() {
 				console.log("droped");
-			this.style.border = "none";
+			//this.style.border = "none";
+			this.classList.remove("card-hover");
 			this.appendChild(draggableTodo);
 			switch(this.id){
 				case 'one' :
@@ -328,7 +273,8 @@
 					selectedProIds[i]=$(this).val()
 				})
 				if(selectedProIds.length===0){
-					alert('Please select the product')
+					$('#staticBackdrop').modal('hide')
+					$("#liveToast").toast("show");
 					
 				  }else{
 					$('#staticBackdrop').modal('hide')

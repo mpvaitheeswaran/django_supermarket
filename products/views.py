@@ -53,14 +53,6 @@ class MyProductList(LoginRequiredMixin,ListView):
             object_list = self.model.objects.filter(user=self.request.user)
         return object_list
 
-# class ProductCreate(LoginRequiredMixin,CreateView):
-#     model = Product
-#     template_name = 'products/product_create.html'
-#     fields = ['name','price','desc','img','stock']
-#     success_url = reverse_lazy('my_product_list')
-#     def form_valid(self, form) :
-#         form.instance.user = self.request.user
-#         return super().form_valid(form)
 # Bootstrap Modal form
 class ProductCreateView(BSModalCreateView):
     template_name = 'products/product_create.html'
@@ -74,11 +66,6 @@ class ProductCreateView(BSModalCreateView):
 class ProductReadView(BSModalReadView):
     model = Product
     template_name = 'products/product_read.html'
-# class ProductUpdate(LoginRequiredMixin,UpdateView):
-#     model = Product
-#     template_name = 'products/product_update.html'
-#     fields = ['name','price','desc','img','stock']
-#     success_url = reverse_lazy('my_product_list')
     
 class ProductUpdateView(BSModalUpdateView):
     model = Product

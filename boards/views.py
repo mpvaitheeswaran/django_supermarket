@@ -5,18 +5,12 @@ from django.views.generic import ListView
 import json
 from products.models import Product
 
-# Create your views here.
-# def boards(request):
-#     context = Board.objects.all()
-#     return render(request,'boards/kanban_board.html')
-
 class BoardList(ListView):
     model = Board
     template_name = 'boards/kanban_board.html'
     context_object_name = 'items'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        #context['products'] = Product.objects.filter(user=self.request.user)
         boards = super().get_context_data(**kwargs)['items']
         products = list(Product.objects.filter(user=self.request.user))
         

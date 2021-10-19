@@ -159,7 +159,6 @@
       $(':checkbox:checked').each(function(i){
         ids[i]=$(this).val()
       })
-      console.log(ids);
       if(ids.length===0){
         //alert('Please select the product')
         $("#myToast").toast("show");

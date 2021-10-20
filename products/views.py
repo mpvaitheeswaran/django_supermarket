@@ -6,6 +6,8 @@ from django.views.generic.edit import CreateView, DeleteView,UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from products.models import Product
 from bootstrap_modal_forms.generic import BSModalCreateView,BSModalDeleteView,BSModalUpdateView,BSModalReadView
+
+from boards.models import Board
 from .forms import ProductCreationForm
 from django.http import JsonResponse
 from django.template.loader import render_to_string
@@ -16,10 +18,17 @@ def myProductsData(request):
     data = dict()
     if request.method == 'GET':
         products = Product.objects.filter(user=request.user)
+        boards = Board.objects.all()
         # asyncSettings.dataKey = 'table'
         data['table'] = render_to_string(
             'products/_product_table.html',
             {'page_obj': products},
+            request=request
+        )
+        # asyncSettings.dataKey = 'board'
+        data['boardcard'] = render_to_string(
+            'boards/kanban_board.html',
+            {'boards': boards},
             request=request
         )
         return JsonResponse(data)

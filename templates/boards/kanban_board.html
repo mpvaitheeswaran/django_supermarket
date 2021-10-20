@@ -10,9 +10,15 @@
 {%endblock%}
 	{%block content%}
 		{%csrf_token%}
-		<div class="content-wrapper kanban">
+		<div  class="content-wrapper kanban">
+			  <!-- Modal Update  -->
+				<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+					<div class="modal-dialog" role="document">
+					<div class="modal-content"></div>
+					</div>
+				</div>
   
-			<!-- Modal -->
+			<!-- Modal  Add Product-->
 			<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-scrollable">
 				<div class="modal-content">
@@ -24,7 +30,7 @@
 					</div>
 					<div class="modal-body">
 						<table class="table table-hover">
-							<tbody>
+							<tbody id="selectTable">
 								{%for product in products%}
 									<tr id="select{{product.id}}" >
 										<th scope="row">
@@ -69,95 +75,7 @@
 				  </div>
 				</div>
 			  </section>
-			<section class="content pb-3">
-			  <div class="container-fluid h-100">
-				
-				<div class="card card-row card-primary">
-				  <div class="card-header">
-					<h3 class="card-title">
-					  To Do
-					</h3>
-					<div class="card-tools">
-						<button type="button" class="btn btn-tool" data-toggle="modal" data-target="#staticBackdrop">
-							<i class="far fa-plus-square"></i>
-						</button>
-					  </div>
-				  </div>
-				  <div class="status card-body" id="one">
-					
-						{%for item in items%}
-						{%if item.product.column == 1%}
-						<div class="todo card card-primary card-outline" draggable="true" id="{{item.product.id}}" >
-							<div class="card-header">
-							  <h5 class="card-title">{{item.product.name}}</h5>
-							  <div class="card-tools">
-								<a href="#" class="btn btn-tool btn-link">#5</a>
-								<a href="#" class="btn btn-tool">
-								  <i class="fas fa-pen"></i>
-								</a>
-							  </div>
-							</div>
-						  </div>
-						
-						{%endif%}
-						{%endfor%}
-				  </div>
-				</div>
-				<div class=" card card-row card-default">
-				  <div class="card-header bg-info">
-					<h3 class="card-title">
-					  In Progress
-					</h3>
-				  </div>
-				  <div class="status card-body" id="two">
-					
-						{%for item in items%}
-						{%if item.product.column == 2%}
-						<div class="todo card card-primary card-outline" draggable="true" id="{{item.product.id}}" >
-							<div class="card-header">
-							  <h5 class="card-title">{{item.product.name}}</h5>
-							  <div class="card-tools">
-								<a href="#" class="btn btn-tool btn-link">#5</a>
-								<a href="#" class="btn btn-tool">
-								  <i class="fas fa-pen"></i>
-								</a>
-							  </div>
-							</div>
-						  </div>
-						
-						{%endif%}
-						{%endfor%}
-					
-				
-				  </div>
-				</div>
-				<div class="card card-row card-success">
-				  <div class="card-header">
-					<h3 class="card-title">
-					  Done
-					</h3>
-				  </div>
-				  <div class="status card-body" id="three">
-						{%for item in items%}
-						{%if item.product.column == 3%}
-						<div class="todo card card-primary card-outline" draggable="true" id="{{item.product.id}}" >
-							<div class="card-header">
-							  <h5 class="card-title">{{item.product.name}}</h5>
-							  <div class="card-tools">
-								<a href="#" class="btn btn-tool btn-link">#5</a>
-								<a href="#" class="btn btn-tool">
-								  <i class="fas fa-pen"></i>
-								</a>
-							  </div>
-							</div>
-						  </div>
-						
-						{%endif%}
-						{%endfor%}
-				  </div>
-				</div>
-			  </div>
-			</section>
+			{%include 'boards/_board.html'%}
 		  </div>
 		 <!-- Toast message -->
 		<div id="myToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0;">
@@ -178,8 +96,8 @@
 	<!-- <script src="{%static 'kanban_board/js/main.js'%}" type="module"></script> -->
 	<script>
 		const todos = document.querySelectorAll(".todo");
-			const all_status = document.querySelectorAll(".status");
-			let draggableTodo = null;
+		const all_status = document.querySelectorAll(".status");
+		let draggableTodo = null;
 
 			todos.forEach((todo) => {
 			todo.addEventListener("dragstart", dragStart);
@@ -229,19 +147,19 @@
 
 			function dragDrop() {
 				console.log("droped");
-			//this.style.border = "none";
-			this.classList.remove("card-hover");
-			this.appendChild(draggableTodo);
-			switch(this.id){
-				case 'one' :
-					var column = 1;
-					break;
-				case 'two':
-					var column = 2;
-					break;
-				case 'three':
-					var column = 3;
-					break;
+				//this.style.border = "none";
+				this.classList.remove("card-hover");
+				this.appendChild(draggableTodo);
+				switch(this.id){
+					case 'one' :
+						var column = 1;
+						break;
+					case 'two':
+						var column = 2;
+						break;
+					case 'three':
+						var column = 3;
+						break;
 			}
 			
 			
@@ -260,10 +178,42 @@
 				console.log('Update Success');
 				}
 			})
-			}
-
+		}
+		
 		$(document).ready(function(){	
 			var selectedProIds = []
+			{%for item in items%}
+			$('#delete_card{{item.id}}').click(function(){
+				console.log($(this).data('board-id'))
+				id = $(this).data('board-id')
+				$.ajax({
+					url:"{%url 'delete_board'%}",
+					method:'get',
+					data:{
+						'id':id,
+					},
+					success: function(){
+						$("#{{item.product.id}}").hide()
+						select = `
+							<tr id="select{{item.product.id}}" >
+								<th scope="row">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" value="{{item.product.id}}" id="check{{item.product.id}}">
+									</div>
+									
+								</th>
+								<td>
+									<label class="form-check-label" for="check{{item.product.id}}">
+									{{item.product.name}}
+								</label>
+								</td>
+							</tr>
+						`
+						$('#selectTable').append(select)
+					}
+				})
+			})
+			{%endfor%}
 			$(':checkbox:checked').each(function(i){
 				$(this).prop( "checked", false );
 			})
@@ -292,19 +242,22 @@
 						  }
 						  for(var i=0;i<responce.id.length;i++){
 							  console.log(responce.id[i])
+							  {%for item in items%}
 							  todo =`
 								<div class="todo card card-primary card-outline" draggable="true" id="${responce.id[i]}" >
 									<div class="card-header">
 									<h5 class="card-title">${responce.name[i]}</h5>
 									<div class="card-tools">
 										<a href="#" class="btn btn-tool btn-link">#5</a>
-										<a href="#" class="btn btn-tool">
-										<i class="fas fa-pen"></i>
-										</a>
+										<button id="update-product" class="update-product bs-modal btn btn-tool" type="button" name="button" data-form-url="{% url 'product_update_board' item.product.id %}"><i class="fas fa-pen"></i></button>
+										<button id="delete_card{{item.id}}" class="btn btn-tool text-danger" data-board-id="{{item.id}}">
+											<i class="bi bi-trash-fill"></i>
+										</button>
 									</div>
 									</div>
 								</div>
 								`
+								{%endfor%}
 								$('#one').append(todo);
 								$('#'+responce.id[i]).on('dragstart',dragStart)
 								$('#'+responce.id[i]).on('dragend',dragEnd)
@@ -319,6 +272,36 @@
 					  })
 				  }
 			})
+			var asyncSuccessMessageUpdate = [
+			"<div ",
+			"style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
+			"class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
+			"Success: Product was updated.",
+			"<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
+			"<span aria-hidden='true'>&times;</span>",
+			"</button>",
+			"</div>",
+			"<script>",
+			"$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
+			"<\/script>"
+			].join("");
+			function updateProductAsyncModalForm() {
+				$(".update-product").each(function(){
+				  $(this).modalForm({
+					formURL: $(this).data("form-url"),
+					asyncUpdate: true,
+					asyncSettings: {
+					  closeOnSubmit: true,
+					  successMessage: asyncSuccessMessageUpdate,
+					  dataUrl: "/boards/myboards/",
+					  dataElementId: "#board",
+					  dataKey: "boardcard",
+					  addModalFormFunction: updateProductAsyncModalForm
+					}
+				  });
+				})
+			  }
+			  updateProductAsyncModalForm();
 		})
 	</script>
 {%endblock%}

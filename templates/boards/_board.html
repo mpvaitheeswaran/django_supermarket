@@ -1,0 +1,125 @@
+<section id="board" class="content pb-3">
+    <div  class="container-fluid h-100">
+      
+      <div class="card card-row card-primary">
+        <div class="card-header">
+          <h3 class="card-title">
+            To Do
+          </h3>
+          <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#staticBackdrop">
+                  <i class="far fa-plus-square"></i>
+              </button>
+            </div>
+        </div>
+        <div class="status card-body" id="one">
+          
+              {%for item in items%}
+              {%if item.product.column == 1%}
+              <div class="todo card card-primary card-outline" draggable="true" id="{{item.product.id}}" >
+                  <div class="card-header">
+                    <h5 class="card-title">{{item.product.name}}</h5>
+                    <div class="card-tools">
+                      <a href="#" class="btn btn-tool btn-link">#5</a>
+                      <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal{{item.product.id}}">
+                          <i class="fas fa-pen"></i>
+                        </button> -->
+                        <button id="update-product" class="update-product bs-modal btn btn-tool" type="button" name="button" data-form-url="{% url 'product_update_board' item.product.id %}"><i class="fas fa-pen"></i></button>
+                      <button id="delete_card{{item.id}}" class="btn btn-tool text-danger" data-board-id="{{item.id}}">
+                        <i class="bi bi-trash-fill"></i>
+                      </button>
+                    </div>
+                  </div>
+              </div>
+              <!-- Modal First col -->
+              <!-- <div class="modal fade" id="modal{{item.product.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Edit {{item.product.name}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                          <form>
+                              <div class="form-group">
+                                <label for="exampleInputEmail1">Product Name</label>
+                                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                              </div>
+                              <div class="form-group">
+                                <label for="exampleInputPassword1">Describtion</label>
+                                <textarea class="form-control"  id="exampleInputPassword1"></textarea>
+                              </div>
+                              
+                            </form>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                      </div>
+                    </div>
+                  </div>
+                </div> -->
+              {%endif%}
+              {%endfor%}
+        </div>
+      </div>
+      <div class=" card card-row card-default">
+        <div class="card-header bg-info">
+          <h3 class="card-title">
+            In Progress
+          </h3>
+        </div>
+        <div class="status card-body" id="two">
+          
+              {%for item in items%}
+              {%if item.product.column == 2%}
+              <div class="todo card card-primary card-outline" draggable="true" id="{{item.product.id}}" >
+                  <div class="card-header">
+                    <h5 class="card-title">{{item.product.name}}</h5>
+                    <div class="card-tools">
+                      <a href="#" class="btn btn-tool btn-link">#5</a>
+                      <button id="update-product" class="update-product bs-modal btn btn-tool" type="button" name="button" data-form-url="{% url 'product_update_board' item.product.id %}"><i class="fas fa-pen"></i></button>
+                      <button id="delete_card{{item.id}}" class="btn btn-tool text-danger" data-board-id="{{item.id}}">
+                        <i class="bi bi-trash-fill"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              
+              {%endif%}
+              {%endfor%}
+          
+      
+        </div>
+      </div>
+      <div class="card card-row card-success">
+        <div class="card-header">
+          <h3 class="card-title">
+            Done
+          </h3>
+        </div>
+        <div class="status card-body" id="three">
+              {%for item in items%}
+              {%if item.product.column == 3%}
+              <div class="todo card card-primary card-outline" draggable="true" id="{{item.product.id}}" >
+                  <div class="card-header">
+                    <h5 class="card-title">{{item.product.name}}</h5>
+                    <div class="card-tools">
+                      <a href="#" class="btn btn-tool btn-link">#5</a>
+                      <button id="update-product" class="update-product bs-modal btn btn-tool" type="button" name="button" data-form-url="{% url 'product_update_board' item.product.id %}"><i class="fas fa-pen"></i></button>
+                      <button id="delete_card{{item.id}}" class="btn btn-tool text-danger" data-board-id="{{item.id}}">
+                        <i class="bi bi-trash-fill"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              
+              {%endif%}
+              {%endfor%}
+        </div>
+      </div>
+    </div>
+  </section>

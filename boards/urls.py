@@ -5,4 +5,7 @@ urlpatterns = [
     path('',views.BoardList.as_view(),name='boards'),
     path('move/',views.moveProduct,name='update_kanban_column'),
     path('add/',views.addProductBoard,name='add_product_board'),
+    path('myboards/',views.myProductsData,name='my_boards'),
+    path('update/<int:pk>/',views.ProductUpdateView.as_view(),name='product_update_board'),
+    path('delete/',views.deleteBoard,name='delete_board')
 ]

@@ -242,26 +242,53 @@
 						  }
 						  for(var i=0;i<responce.id.length;i++){
 							  console.log(responce.id[i])
-							  {%for item in items%}
 							  todo =`
 								<div class="todo card card-primary card-outline" draggable="true" id="${responce.id[i]}" >
 									<div class="card-header">
 									<h5 class="card-title">${responce.name[i]}</h5>
 									<div class="card-tools">
 										<a href="#" class="btn btn-tool btn-link">#5</a>
-										<button id="update-product" class="update-product bs-modal btn btn-tool" type="button" name="button" data-form-url="{% url 'product_update_board' item.product.id %}"><i class="fas fa-pen"></i></button>
-										<button id="delete_card{{item.id}}" class="btn btn-tool text-danger" data-board-id="{{item.id}}">
+										<button id="update-product" class="update-product bs-modal btn btn-tool" type="button" name="button" data-form-url="/boards/update/${responce.id[i]}/"><i class="fas fa-pen"></i></button>
+										<button id="delete_card${responce.boardid[i]}" class="btn btn-tool text-danger" data-board-id="${responce.boardid[i]}">
 											<i class="bi bi-trash-fill"></i>
 										</button>
 									</div>
 									</div>
 								</div>
 								`
-								{%endfor%}
 								$('#one').append(todo);
 								$('#'+responce.id[i]).on('dragstart',dragStart)
 								$('#'+responce.id[i]).on('dragend',dragEnd)
-
+								$('#delete_card'+responce.boardid[i]).click(function(){
+									console.log($(this).data('board-id'))
+									id = $(this).data('board-id')
+									$.ajax({
+										url:"{%url 'delete_board'%}",
+										method:'get',
+										data:{
+											'id':id,
+										},
+										success: function(){
+											$("#"+responce.id[i]).hide()
+											select = `
+												<tr id="select${responce.id[i]}" >
+													<th scope="row">
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox" value="${responce.id[i]}" id="check${responce.id[i]}">
+														</div>
+														
+													</th>
+													<td>
+														<label class="form-check-label" for="check${responce.id[i]}">
+															${responce.name[i]}
+													</label>
+													</td>
+												</tr>
+											`
+											$('#selectTable').append(select)
+										}
+									})
+								})
 								$(':checkbox:checked').each(function(i){
 									$(this).prop( "checked", false );
 								})

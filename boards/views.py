@@ -71,12 +71,14 @@ def addProductBoard(request):
         productIds = request.GET.getlist('selectedProIds[]')
         ids =[] 
         names = []
+        boardIds =[]
         for id in productIds:
             product = Product.objects.get(pk=id)
-            Board.objects.create(product=product)
+            board = Board.objects.create(product=product)
             ids.append(product.id) 
             names.append(product.name) 
-        return HttpResponse(json.dumps({'id': ids, 'name': names}), content_type="application/json")
+            boardIds.append(board.id)
+        return HttpResponse(json.dumps({'id': ids, 'name': names,'boardid':boardIds}), content_type="application/json")
 
 class ProductUpdateView(BSModalUpdateView):
     model = Product

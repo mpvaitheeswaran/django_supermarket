@@ -27,7 +27,8 @@
   <link rel="stylesheet" href="{%static 'plugins/daterangepicker/daterangepicker.css'%}">
   <!-- summernote -->
   <link rel="stylesheet" href="{%static 'plugins/summernote/summernote-bs4.min.css'%}">
-  {%block stylesheet %}
+  <!-- Data table css  -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">  {%block stylesheet %}
   {%endblock%}
   
 </head>
@@ -126,7 +127,8 @@
 <!-- <script src="{%static 'dist/js/demo.js'%}"></script> -->
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{%static 'dist/js/pages/dashboard.js'%}"></script>
-{%block javascript%}
+<!-- Data table jquery plugin -->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>{%block javascript%}
 {%endblock%}
 </body>
 </html>

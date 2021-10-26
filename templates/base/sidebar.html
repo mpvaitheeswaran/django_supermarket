@@ -2,6 +2,7 @@
 {% url 'my_product_list' as my_product_list %}
 {% url 'product_list' as product_list %}
 {% url 'boards' as boards %}
+{%url 'my_product_list_datatable' as my_product_list_datatable%}
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
@@ -38,8 +39,8 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="nav-item menu-open">
-            <a href="#" class="nav-link active">
+          <li class="nav-item {% if request.path == product_list or request.path == my_product_list or request.path == boards %} menu-open {%endif%}">
+            <a href="#" class="nav-link {% if request.path == product_list or request.path == my_product_list  or request.path == boards%} active {%endif%}">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -68,6 +69,24 @@
               </li>
             </ul>
           </li>
+            <li class="nav-item {% if request.path == my_product_list_datatable %} menu-open {%endif%}">
+              <a href="#" class="nav-link {% if request.path == my_product_list_datatable %} active {%endif%}">
+                <i class="nav-icon fas fa-th"></i>
+                <p>
+                  Data Table
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                
+                <li class="nav-item ">
+                  <a href="{%url 'my_product_list_datatable'%}" class="nav-link {% if request.path == my_product_list_datatable %} active {%endif%}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>My Products</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
           <!-- <li class="nav-item">
             <a href="pages/widgets.html" class="nav-link">
               <i class="nav-icon fas fa-th"></i>

@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('',views.ProductList.as_view(),name='product_list'),
     path('me/',views.MyProductList.as_view(),name='my_product_list'),
+    path('datatable/me/',views.MyProductListDataTable.as_view(),name='my_product_list_datatable'),
     path('myproducts/',views.myProductsData,name='my_products'),
     # path('create/',views.ProductCreate.as_view(),name='product_create'),
     path('create/',views.ProductCreateView.as_view(),name='product_create'),

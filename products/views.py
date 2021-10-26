@@ -22,7 +22,7 @@ def myProductsData(request):
         # asyncSettings.dataKey = 'table'
         data['table'] = render_to_string(
             'products/_product_table.html',
-            {'page_obj': products},
+            {'products': products},
             request=request
         )
         # asyncSettings.dataKey = 'board'
@@ -36,7 +36,6 @@ class ProductList(LoginRequiredMixin,ListView):
     model = Product
     template_name = 'products/product_list.html'
     context_object_name = 'products'
-    paginate_by = 5
     def get_queryset(self):
         search = self.request.GET.get('search')
         if search:
@@ -44,11 +43,10 @@ class ProductList(LoginRequiredMixin,ListView):
         else:
             object_list = self.model.objects.all()
         return object_list
-
+#Form normal table
 class MyProductList(LoginRequiredMixin,ListView):
     model = Product
     template_name = 'products/my_product_list.html'
-    paginate_by = 5
     context_object_name = 'products'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -61,6 +59,15 @@ class MyProductList(LoginRequiredMixin,ListView):
         else:
             object_list = self.model.objects.filter(user=self.request.user)
         return object_list
+#For datatable
+class MyProductListDataTable(LoginRequiredMixin,ListView):
+    model = Product
+    template_name = 'products/my_product_list_datatable.html'
+    context_object_name = 'products'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['products'] = Product.objects.filter(user=self.request.user)
+        return context
 
 # Bootstrap Modal form
 class ProductCreateView(BSModalCreateView):
@@ -101,3 +108,4 @@ def deleteProduct(request):
             product = Product.objects.get(pk=id)
             product.delete()
         return redirect('my_products')
+    

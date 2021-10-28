@@ -20,7 +20,6 @@
                   <div class="card-header">
                     <h5 class="card-title">{{item.product.name}}</h5>
                     <div class="card-tools">
-                      <a href="#" class="btn btn-tool btn-link">#5</a>
                       <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal{{item.product.id}}">
                           <i class="fas fa-pen"></i>
                         </button> -->
@@ -80,7 +79,6 @@
                   <div class="card-header">
                     <h5 class="card-title">{{item.product.name}}</h5>
                     <div class="card-tools">
-                      <a href="#" class="btn btn-tool btn-link">#5</a>
                       <button id="update-product" class="update-product bs-modal btn btn-tool" type="button" name="button" data-form-url="{% url 'product_update_board' item.product.id %}"><i class="fas fa-pen"></i></button>
                       <button id="delete_card{{item.id}}" class="btn btn-tool text-danger" data-board-id="{{item.id}}">
                         <i class="bi bi-trash-fill"></i>
@@ -104,11 +102,10 @@
         <div class="status card-body" id="three">
               {%for item in items%}
               {%if item.product.column == 3%}
-              <div class="todo card card-primary card-outline" draggable="true" id="{{item.product.id}}" >
+              <div class="todo card card-success card-outline"  id="{{item.product.id}}" >
                   <div class="card-header">
                     <h5 class="card-title">{{item.product.name}}</h5>
                     <div class="card-tools">
-                      <a href="#" class="btn btn-tool btn-link">#5</a>
                       <button id="update-product" class="update-product bs-modal btn btn-tool" type="button" name="button" data-form-url="{% url 'product_update_board' item.product.id %}"><i class="fas fa-pen"></i></button>
                       <button id="delete_card{{item.id}}" class="btn btn-tool text-danger" data-board-id="{{item.id}}">
                         <i class="bi bi-trash-fill"></i>

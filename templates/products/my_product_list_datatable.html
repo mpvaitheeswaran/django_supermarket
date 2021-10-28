@@ -168,7 +168,12 @@
           $(node).removeClass('btn-secondary')
        }
     },
-      ]
+      ],
+      //removing sorting in unnesasary column. 
+      'columnDefs': [ {
+        'targets': [0,5], // column index (start from 0)
+        'orderable': false, // set orderable false for selected columns
+     }]
     });
     //deselect all checkboxes when refreshing
     $(':checkbox').each(function() {

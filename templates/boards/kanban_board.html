@@ -6,6 +6,12 @@
 	.card-body.card-hover{
 		background-color:#f5f7fa ;
 	}
+	#three button{
+		display: none;
+	}
+	#three .card-title{
+		text-decoration-line: line-through;
+	}
 </style>
 {%endblock%}
 	{%block content%}
@@ -149,6 +155,10 @@
 				console.log("droped");
 				//this.style.border = "none";
 				this.classList.remove("card-hover");
+				draggableTodo.classList.remove('card-primary')
+				draggableTodo.classList.add('card-success')
+				//Remove draggable.
+				draggableTodo.removeAttribute("draggable");
 				this.appendChild(draggableTodo);
 				switch(this.id){
 					case 'one' :

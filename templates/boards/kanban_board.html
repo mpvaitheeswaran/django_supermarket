@@ -1,4 +1,5 @@
 {%extends 'base/base.html'%}
+{% load notifications_tags %}
 {%load static%}
 {%block stylesheet %}
 <!-- <link rel="stylesheet" href="{%static 'kanban_board/css/main.css'%}"> -->
@@ -70,12 +71,12 @@
 				<div class="container-fluid">
 				  <div class="row">
 					<div class="col-sm-6">
-					  <h1>Kanban Board</h1>
+					  <h1>Tasks</h1>
 					</div>
 					<div class="col-sm-6 d-none d-sm-block">
 					  <ol class="breadcrumb float-sm-right">
 						<li class="breadcrumb-item"><a href="#">Home</a></li>
-						<li class="breadcrumb-item active">Kanban Board</li>
+						<li class="breadcrumb-item active">Tasks</li>
 					  </ol>
 					</div>
 				  </div>
@@ -155,10 +156,6 @@
 				console.log("droped");
 				//this.style.border = "none";
 				this.classList.remove("card-hover");
-				draggableTodo.classList.remove('card-primary')
-				draggableTodo.classList.add('card-success')
-				//Remove draggable.
-				draggableTodo.removeAttribute("draggable");
 				this.appendChild(draggableTodo);
 				switch(this.id){
 					case 'one' :
@@ -169,6 +166,10 @@
 						break;
 					case 'three':
 						var column = 3;
+						draggableTodo.classList.remove('card-primary')
+						draggableTodo.classList.add('card-success')
+						//Remove draggable.
+						draggableTodo.removeAttribute("draggable");
 						break;
 			}
 			
@@ -341,6 +342,66 @@
 			  updateProductAsyncModalForm();
 		})
 	</script>
+	<script>
+		//For async notification update.
+		function my_special_notification_callback(data) {
+			var unread_notifications = document.getElementById('unread_notify')
+			unread_notifications.innerHTML='';
+			var notification_badge = document.getElementById('badge')
+			notification_badge.innerHTML='';
+			for (var i=0; i < data.unread_list.length; i++) {
+				notification = data.unread_list[i];
+				var date = new Date(notification.timestamp)
+				elem = `
+				<a href="/boards/read/${notification.id}/" class="dropdown-item bg-primary" style="overflow: auto;">
+					<i class="bi bi-bell mr-2"></i> ${notification.verb}
+					<span class="float-right text-light text-sm"> ${timeSince(date)} ago</span>
+				  </a>
+				  <div class="dropdown-divider"></div>
+				`
+				unread_notifications.insertAdjacentHTML('beforeend',elem)
+				
+			}
+			var unread_count = data.unread_list.length;
+			if(!unread_count == 0){
+				elem = `
+				<span class="badge badge-warning navbar-badge">
+					${unread_count}
+				</span>
+				`
+				notification_badge.insertAdjacentHTML('beforeend',elem)
+			}
+		}
+		function timeSince(date) {
+
+			var seconds = Math.floor((new Date() - date) / 1000);
+		  
+			var interval = seconds / 31536000;
+		  
+			if (interval > 1) {
+			  return Math.floor(interval) + " years";
+			}
+			interval = seconds / 2592000;
+			if (interval > 1) {
+			  return Math.floor(interval) + " months";
+			}
+			interval = seconds / 86400;
+			if (interval > 1) {
+			  return Math.floor(interval) + " days";
+			}
+			interval = seconds / 3600;
+			if (interval > 1) {
+			  return Math.floor(interval) + " hours";
+			}
+			interval = seconds / 60;
+			if (interval > 1) {
+			  return Math.floor(interval) + " minutes";
+			}
+			return Math.floor(seconds) + " seconds";
+		  }
+	</script>
+	<script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
+	{% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge,my_special_notification_callback' %}
 {%endblock%}
 </body>
 </html>

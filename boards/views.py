@@ -8,6 +8,9 @@ from products.models import Product
 from bootstrap_modal_forms.generic import BSModalCreateView,BSModalDeleteView,BSModalUpdateView,BSModalReadView
 from products.forms import ProductCreationForm
 from django.urls import reverse_lazy
+from notifications.signals import notify
+from notifications.models import Notification
+from django.contrib.auth.models import User
 
 
 def myProductsData(request):
@@ -63,6 +66,9 @@ def moveProduct(request):
         columnId = int(request.POST.get('column_id'))
         product = Product.objects.get(pk=productId)
         product.column = columnId
+        if columnId == 3:
+            verb = 'The task {0} is Done.'.format(product.name)
+            notify.send(request.user, recipient=request.user, verb=verb)
         product.save()
         return redirect('boards')
 
@@ -97,3 +103,14 @@ def deleteBoard(request):
         board.delete()
         print(boardId)
         return redirect('boards')
+
+def readAllNotifications(request):
+    user = User.objects.get(pk=request.user.id)
+    unread = user.notifications.unread()
+    unread.mark_all_as_read()
+    return redirect('boards')
+
+def readNotification(request,id):
+    unread = Notification.objects.get(id=id)
+    unread.mark_as_read()
+    return redirect('boards')
